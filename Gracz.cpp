@@ -3,7 +3,7 @@
 #include "Gra.h"
 #include <ctime>
 #include <conio.h>
-Gracz::Gracz(int _dmg, int _liczba_strzalow, int _numer, int _x, int _y, int _kierunek, Gra& _gierka, float _hp, char _ikona) : Jednostka(_numer, _x, _y, _kierunek, _gierka, _hp, _ikona)
+Gracz::Gracz(int _dmg, int _liczba_strzalow, int _numer, int _x, int _y, int _kierunek, Gra& _gierka, float _hp, char _ikona) : Jednostka(_hp, _numer, _x, _y, _gierka, _ikona, _kierunek)
 {
 	dmg = _dmg;
 	liczba_strzalow = _liczba_strzalow;

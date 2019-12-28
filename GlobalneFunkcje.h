@@ -7,8 +7,8 @@
 #include <time.h>
 #include <chrono>
 #include <thread>
-//#include <>
 #include <mutex>
+
 	// x - kolumna, y - wiersz
 	void ustaw_pozycje_kursora(int x, int y)
 	{
@@ -56,9 +56,9 @@
 			perror("");
 			throw ("Nie udalo sie otworzyc folderu! \n");
 		}
-	}
-	// Gra& gierka, Plansza& mapa,
-	void RuchyInnych(Gra &gierka, std::vector<Jednostka*>& _wszyscy, int& _liczba_obiektow, bool& koniec, bool& flaga1)
+	};
+	
+	/*void RuchyInnych(Gra &gierka, std::vector<Jednostka*>& _wszyscy, int& _liczba_obiektow, bool& koniec, bool& flaga1)
 	{
 		while (!koniec)
 		{
@@ -75,6 +75,18 @@
 				flaga1 = false;
 			}
 		}
+	}*/
+	void cls(int x, int y)
+	{
+		static const HANDLE kursor = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO informacje;
+		COORD pozycja = {x, y};
+		std::cout.flush();
+		if (!GetConsoleScreenBufferInfo(kursor, &informacje))
+			abort();		
+		DWORD dlugosc = (informacje.dwSize.X - x) * (informacje.dwSize.Y - y);
+		DWORD temp;
+		FillConsoleOutputCharacter(kursor, ' ', dlugosc, pozycja, &temp);
 	}
 
 

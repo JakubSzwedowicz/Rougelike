@@ -1,21 +1,26 @@
 #include <iostream>
+#include "Jednostka.h"
 #include "Gra.h"
 #include "Gracz.h"
 #include "Plansza.h"
 #include "Przeciwnik.h"
-#include <conio.h>
-#include "GlobalneFunkcje.h"
+#include "Obiekt.h"
 #include "Pocisk.h"
 #include "Mina.h"
-#include <thread>
+#include "Wiezyczka.h"
+#include "GlobalneFunkcje.h"
+#include <conio.h>
 #include <fstream>
-#include "Obiekt.h"
-//#include <boost/ref.hpp>
+#include <time.h>
+
+
+
+/*#include <thread>
+#include <boost/ref.hpp>
 #include <functional>
 #include <chrono>
-#include <time.h>
 #include <future>
-#include <mutex>
+#include <mutex>*/
 
 
 template bool Gra::WystrzelPocisk<int>(Jednostka& obiekt, int _dmg, int kierunek);
@@ -25,11 +30,13 @@ Gra::Gra()
 {
 	mapa = nullptr;
 	koniec = false;
+	czlowiek = 0;
 	liczba_obiektow = 0;
-	ustawienia.hp_gracza = 5;
-	ustawienia.pociski_gracza = 10;
-	ustawienia.dmg_przeciwnikow = 1;
+	ustawienia.hp_gracza = 50;
+	ustawienia.hp_wrogow = 1;
 	ustawienia.dmg_gracza = 1;
+	ustawienia.dmg_przeciwnikow = 1;
+	ustawienia.pociski_gracza = 100;
 	ustawienia.szybkosc_przeciwnikow = 4;
 }
 void Gra::Menu()
@@ -50,11 +57,15 @@ void Gra::Menu()
 				Posprzataj();
 				break;
 			case 2:
+				if (mapa != nullptr)
+					Posprzataj();
 				WczytajMape();
 				break;
-			case 3:				
-				std::cout << "1. Latwy \n 2. sredni \n 3. trudny \n";
-				decyzja = kontrola_bledow(1, 3);
+			case 3:	
+				if (mapa != nullptr)
+					throw "Juz wczytano mape! \n";
+				std::cout << "1. Latwy \n 2. sredni \n 3. trudny \n 4. Uzytkownika \n";
+				decyzja = kontrola_bledow(1, 4);
 				ZmienUstawienia(decyzja);
 				break;
 			case 4:
@@ -79,31 +90,48 @@ void Gra::ZmienUstawienia(int decyzja)
 	switch (decyzja)
 	{
 	case 1:
-		ustawienia.hp_gracza = 5;
+		ustawienia.hp_gracza = 50;
 		ustawienia.hp_wrogow = 1;
 		ustawienia.dmg_gracza = 1;
 		ustawienia.dmg_przeciwnikow = 1;
-		ustawienia.pociski_gracza = 20;
+		ustawienia.pociski_gracza = 100;
 		ustawienia.szybkosc_przeciwnikow = 4;
 		break;
 	case 2:
-		ustawienia.hp_gracza = 3;
+		ustawienia.hp_gracza = 25;
 		ustawienia.hp_wrogow = 2;
 		ustawienia.dmg_gracza = 1;
-		ustawienia.dmg_przeciwnikow = 1;
-		ustawienia.pociski_gracza = 15;
+		ustawienia.dmg_przeciwnikow = 2;
+		ustawienia.pociski_gracza = 50;
 		ustawienia.szybkosc_przeciwnikow = 2;
 		break;
 	case 3:
-		ustawienia.hp_gracza = 1;
+		ustawienia.hp_gracza = 10;
 		ustawienia.hp_wrogow = 3;
 		ustawienia.dmg_gracza = 1;
-		ustawienia.dmg_przeciwnikow = 1;
-		ustawienia.pociski_gracza = 10;
+		ustawienia.dmg_przeciwnikow = 3;
+		ustawienia.pociski_gracza = 20;
 		ustawienia.szybkosc_przeciwnikow = 1;
 		break;
-	}
-	
+	case 4:
+		int liczba;
+		std::cout << "Podaj hp_gracza \n";
+		liczba = kontrola_bledow(1, 100000);
+		ustawienia.hp_gracza = liczba;
+		std::cout << "Podaj hp_wrogow \n";
+		liczba = kontrola_bledow(1, 100000);
+		ustawienia.hp_wrogow = liczba;
+		std::cout << "Podaj dmg_gracza \n";		
+		liczba = kontrola_bledow(1, 100000);
+		ustawienia.dmg_gracza = liczba;
+		std::cout << "Podaj liczbe pociskow gracza \n";
+		liczba = kontrola_bledow(1, 100000);
+		ustawienia.pociski_gracza = liczba;
+		std::cout << "Podaj szybkosc gry (im mniej tym szybciej) \n";
+		liczba = kontrola_bledow(1, 100000);
+		ustawienia.szybkosc_przeciwnikow = liczba;
+		break;
+	}	
 }
 void Gra::Posprzataj()
 {
@@ -141,10 +169,8 @@ void Gra::WczytajMape()
 		mapa = new Plansza(x, y, mapa_z_pliku);
 		SynchronizujObiektyZPlansza();
 		plik.close();
-
 	}
 	else throw "Nie udalo siê otworzyc pliku! \n";
-
 }
 void Gra::SynchronizujObiektyZPlansza()
 {	
@@ -158,7 +184,7 @@ void Gra::SynchronizujObiektyZPlansza()
 				StworzObiekt(1, i, j, 1, 1);
 				break;
 			case 'P':
-				StworzObiekt(3, i, j, 1, float(0.5)); // Dlaczego domaga siê floata? Wygl¹da na to, ¿e tempate nie akceptuje double, czy to ze wzglêdu na deklaracjê w cpp bez double?
+				StworzObiekt(3, i, j, 1, float(0.5)); // Dlaczego domaga siê floata? Wygl¹da na to, ¿e template nie akceptuje double, czy to ze wzglêdu na deklaracjê w cpp bez double?
 				break;
 			case 'M':
 				StworzObiekt(5, i, j, 1, 2);
@@ -167,6 +193,7 @@ void Gra::SynchronizujObiektyZPlansza()
 				StworzObiekt<int>(4, i, j);
 				break;
 			case 'W':
+				StworzObiekt<int>(6, i, j);
 				break;
 			}
 		}
@@ -180,8 +207,6 @@ bool Gra::PrzesunObjekt(Jednostka& obiekt, int _kierunek)
 	// kierunek: 1 gora, 2 prawo, 3 lewo, 4 dol
 	int nowy_x, nowy_y;
 	char pole;
-	
-	
 		switch (_kierunek)
 		{
 		case 1:
@@ -278,11 +303,25 @@ void Gra::DetekcjaKolizji(Jednostka& obiekt, int _nowy_x, int _nowy_y, int _kier
 		{
 			PrzesunObjekt(*(wszyscy.at(ZwrocObiektZPozycji(_nowy_x, _nowy_y))), _kierunek);
 		}
+		else if (obiekt.DajIkona() == '*')
+			UsunObiekt(obiekt);
 		break;
 	case 'M':
 		if (obiekt.DajIkona() == '*')
 		{
 			UsunObiekt(*(wszyscy.at(ZwrocObiektZPozycji(_nowy_x, _nowy_y))));
+			UsunObiekt(obiekt);
+		}
+		else if (obiekt.DajIkona() == 'G')
+		{
+			*(wszyscy[ZwrocObiektZPozycji(_nowy_x, _nowy_y)]) -= obiekt.DajDmg();
+			UsunObiekt(obiekt);
+		}
+		break;
+	case 'W':
+		if (obiekt.DajIkona() == '*')
+		{
+			*(wszyscy[ZwrocObiektZPozycji(_nowy_x, _nowy_y)]) -= obiekt.DajDmg();
 			UsunObiekt(obiekt);
 		}
 	}
@@ -312,11 +351,9 @@ void Gra::PoprawNumery(int nowy_numer)
 	for (int i = nowy_numer; i < liczba_obiektow; i++)
 		wszyscy[i]->UstawNumer(i);
 }
-void Gra::OdswierzObraz(std::vector<std::string>& stare_pole)
+void Gra::OdswierzObraz(std::vector<std::string>& stare_pole, float& _hp, int& _pociski)
 {
 	//std::mutex mapa_mutex;
-	float _hp = 0;
-	int _pociski = 0;
 	//std::lock_guard<std::mutex> guard(mapa_mutex);
 	//mapa_mutex.lock(); // Tutaj powinny znaleŸæ siê blokady dostêpu do mapy ¿eby w¹tek nie edytowa³ mapy w trakcie odœwie¿ania obrazu
 	ustaw_pozycje_kursora(0, 0);
@@ -331,14 +368,15 @@ void Gra::OdswierzObraz(std::vector<std::string>& stare_pole)
 			std::cout << mapa->ZwrocPole(x, y);
 		}
 	}
-	if (_hp != wszyscy[0]->DajHp() || _pociski != wszyscy[0]->DajLiczbeStrzalow())
+	if (_hp != wszyscy[czlowiek]->DajHp() || _pociski != wszyscy[czlowiek]->DajLiczbeStrzalow())
 	{
-		ustaw_pozycje_kursora(0, mapa->ZwrocRozmiar_X() + 2);
+		cls(0, mapa->ZwrocRozmiar_X() + 2);
+		ustaw_pozycje_kursora(0, mapa->ZwrocRozmiar_X() + 2);		
 		std::cout << "Panel Gracza: \n";
-		std::cout << "Hp: " << wszyscy[0]->DajHp() << std::endl;
-		std::cout << "pociski: " << wszyscy[0]->DajLiczbeStrzalow() << std::endl;
-		_hp = wszyscy[0]->DajHp();
-		_pociski = wszyscy[0]->DajLiczbeStrzalow();
+		std::cout << "Hp: " << wszyscy[czlowiek]->DajHp() << std::endl;
+		std::cout << "pociski: " << wszyscy[czlowiek]->DajLiczbeStrzalow() << std::endl;
+		_hp = wszyscy[czlowiek]->DajHp();
+		_pociski = wszyscy[czlowiek]->DajLiczbeStrzalow();
 	}
 	std::cout.flush();
 	//mapa_mutex.unlock();
@@ -350,26 +388,20 @@ void Gra::Graj()
 	if (mapa == nullptr)
 		throw "Najpierw wczytaj mape! \n";	
 	unsigned char znak;
+	float hp = 0;
+	int pociski = 0;
 	clock_t tura_botow = clock() + 250 * ustawienia.szybkosc_przeciwnikow * CLOCKS_PER_SEC/1000;
-	clock_t tura_pociskow = clock() + 125 * ustawienia.szybkosc_przeciwnikow * CLOCKS_PER_SEC / 1000;
-	std::thread watek;
-	//std::future<bool> watek = std::async(std::launch::async, [] {return RuchyInnych(wszyscy, liczba_obiektow, koniec); });
+	clock_t tura_pociskow = clock() + 125 * ustawienia.szybkosc_przeciwnikow * CLOCKS_PER_SEC / 1000;	
 	bool odswierz_ekran = true;
 	system("cls");
-	mapa->Wyswietl();
-	//if (liczba_obiektow > 1)
-		//std::ref(*this), std::ref(mapa), 
-		//watek = std::thread(RuchyInnych, std::ref(*this), std::ref(wszyscy), std::ref(liczba_obiektow), std::ref(koniec), std::ref(flaga));
+	mapa->Wyswietl();	
 	while (!koniec)
-	{			
-		//clock_t czas = clock() + 500 * CLOCKS_PER_SEC / 1000;
+	{
 		std::vector<std::string> stare_pole(mapa->ZwrocCalaPlansze());
-		//while (flaga_watku);
-			//std::this_thread::sleep_for(std::chrono::milliseconds(50));		
 		if (_kbhit())
 			{
 				znak = _getch();
-				wszyscy[0]->Dzialanie(znak);
+				wszyscy[czlowiek]->Dzialanie(znak);
 				odswierz_ekran = true;
 			}
 		if (tura_pociskow < clock())
@@ -379,8 +411,8 @@ void Gra::Graj()
 				if (wszyscy[i]->DajIkona() != '*')
 					continue;
 				else
-					wszyscy[i]->Akcja();
-			}				
+					wszyscy[i]->Akcja();				
+			}
 			odswierz_ekran = true;
 			tura_pociskow = clock() + 125 * ustawienia.szybkosc_przeciwnikow * CLOCKS_PER_SEC / 1000;
 		}
@@ -396,17 +428,11 @@ void Gra::Graj()
 		}
 		if (odswierz_ekran)
 		{
-			OdswierzObraz(stare_pole);
+			OdswierzObraz(stare_pole, hp, pociski);
 			odswierz_ekran = false;
 		}
-		
-		
-		//watek_dziala = true;
-		//flaga_watku = true;
-		
 	}
 	std::cout << "Koniec gry! \n";
-
 	system("pause");
 }
 template<typename T>
@@ -433,12 +459,9 @@ bool Gra::WystrzelPocisk(Jednostka& obiekt, T _dmg, int kierunek)
 		break;
 	}
 	if (mapa->ZwrocPole(nowy_x, nowy_y) == ' ')
-	{				
-		//wszyscy.push_back(&kula);
-		//wszyscy[liczba_obiektow] = new Pocisk<T> (_dmg, nowy_x, nowy_y, obiekt.ZwrocKierunek(), *this);
+	{
 		StworzObiekt(2, nowy_x, nowy_y, kierunek, _dmg);
-		return true;
-		
+		return true;		
 	}
 	return false;
 }
@@ -446,10 +469,11 @@ template<typename T>//https://stackoverflow.com/questions/48097444/why-do-i-get-
 void Gra::StworzObiekt(int opcja, int nowy_x, int nowy_y, int kierunek, T _dmg) 
 {
 	int i = 0;
-	switch (opcja) // 1 - gracz, 2 - pocisk, 3 - przeciwnik, 4 - obiekt
+	switch (opcja) // 1 - gracz, 2 - pocisk, 3 - przeciwnik, 4 - obiekt, 5 - mina, 6 - wie¿yczka
 	{
 	case 1:
-		wszyscy.push_back(new Gracz(ustawienia.dmg_gracza, ustawienia.pociski_gracza, liczba_obiektow, nowy_x, nowy_y, kierunek, *this, ustawienia.hp_gracza));
+		czlowiek = liczba_obiektow;
+		wszyscy.push_back(new Gracz(_dmg * ustawienia.dmg_gracza, ustawienia.pociski_gracza, liczba_obiektow, nowy_x, nowy_y, kierunek, *this, ustawienia.hp_gracza));
 		//mapa->ZmienPole(wszyscy[liczba_obiektow]->DajIkona(), nowy_x, nowy_y);
 		liczba_obiektow++;
 		break;
@@ -460,7 +484,7 @@ void Gra::StworzObiekt(int opcja, int nowy_x, int nowy_y, int kierunek, T _dmg)
 		break;
 	case 3:				
 		while (wszyscy[i]->DajIkona() != 'G') i++;
-		wszyscy.push_back(new Przeciwnik(*(wszyscy.at(i)), liczba_obiektow, nowy_x, nowy_y, 1, *this, ustawienia.hp_wrogow, 0.5 * ustawienia.dmg_przeciwnikow));
+		wszyscy.push_back(new Przeciwnik(ustawienia.hp_wrogow, liczba_obiektow, nowy_x, nowy_y, *this, _dmg * ustawienia.dmg_przeciwnikow, *(wszyscy.at(i))));
 		//mapa->ZmienPole(wszyscy[liczba_obiektow]->DajIkona(), nowy_x, nowy_y);
 		liczba_obiektow++;
 		break;
@@ -471,6 +495,10 @@ void Gra::StworzObiekt(int opcja, int nowy_x, int nowy_y, int kierunek, T _dmg)
 		break;
 	case 5:
 		wszyscy.push_back(new Mina(1 * ustawienia.dmg_przeciwnikow, liczba_obiektow, nowy_x, nowy_y, kierunek, *this));
+		liczba_obiektow++;
+		break;
+	case 6:
+		wszyscy.push_back(new Wiezyczka(liczba_obiektow, nowy_x, nowy_y, *this, 1 * ustawienia.dmg_przeciwnikow));
 		liczba_obiektow++;
 		break;
 	}

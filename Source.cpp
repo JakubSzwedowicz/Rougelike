@@ -1,10 +1,10 @@
 #include <iostream>
 #include "Gra.h"
-#include <thread>
+#include <time.h>
 
-#define _CRTDBG_MAP_ALLOC	//Do 
-#include <stdlib.h>			//wycieku 
-#include <crtdbg.h>			//pamiêci
+//#define _CRTDBG_MAP_ALLOC	//Do 
+//#include <stdlib.h>			//wycieku 
+//#include <crtdbg.h>			//pamiêci
 
 int main()
 {

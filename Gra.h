@@ -2,22 +2,19 @@
 #include "Jednostka.h"
 #include "Gracz.h"
 #include "Plansza.h"
+#include "Opcje.h"
 
-struct opcje
-{
-	float hp_gracza, szybkosc_przeciwnikow, hp_wrogow;
-	int pociski_gracza, dmg_przeciwnikow, dmg_gracza;
-};
 
-class Jednostka;
+
+//class Jednostka;
 class Gra
 {
 private:
 	std::vector<Jednostka*> wszyscy;
-	int liczba_obiektow;
+	int liczba_obiektow, czlowiek;
 	Plansza *mapa;
 	bool koniec;
-	opcje ustawienia;
+	Opcje ustawienia;
 public:
 	Gra();
 	void Menu();
@@ -32,7 +29,7 @@ public:
 	int ZwrocObiektZPozycji(int x, int y);
 	void UsunObiekt(Jednostka& obiekt);
 	void PoprawNumery(int nowy_numer);
-	void OdswierzObraz(std::vector<std::string>& stare_pole);
+	void OdswierzObraz(std::vector<std::string>& stare_pole, float& _hp, int& _pociski);
 	void Graj();
 	Plansza& ZwrocPlansze() { return *mapa; };
 	template<typename T>

@@ -7,7 +7,7 @@
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 
-Jednostka::Jednostka(int _numer, int _x, int _y, int _kierunek, Gra& _gierka, float _hp, char _ikona) : numer(_numer), x(_x), y(_y), kierunek(_kierunek), gierka(_gierka), hp(_hp), ikona(_ikona)
+Jednostka::Jednostka(float _hp, int _numer, int _x, int _y, Gra& _gierka, char _ikona, int _kierunek) : hp(_hp), numer(_numer), x(_x), y(_y), gierka(_gierka), ikona(_ikona), kierunek(_kierunek)
 {
 
 };
@@ -71,7 +71,7 @@ void Jednostka::UstawNumer(int _numer)
 void Jednostka::operator-=(float dmg)
 {	
 	hp -= dmg;
-	if (hp == 0)
+	if (hp <= 0)
 		gierka.UsunObiekt(*this);
 };
 int Jednostka::ZwrocX()

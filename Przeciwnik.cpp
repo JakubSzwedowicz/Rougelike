@@ -8,10 +8,10 @@
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 
-Przeciwnik::Przeciwnik(Jednostka& _wrog, int _numer, int _x, int _y, int _kierunek, Gra& _gierka, float _hp, float _dmg, char _ikona) : Jednostka(_numer, _x, _y, _kierunek, _gierka, _hp, _ikona), wrog(_wrog)
+Przeciwnik::Przeciwnik(float _hp, int _numer, int _x, int _y, Gra& _gierka, float _dmg, Jednostka& _wrog, int _kierunek, char _ikona) : Jednostka(_hp, _numer, _x, _y, _gierka, _ikona, _kierunek), wrog(_wrog)
 {	
 	dmg = _dmg;
-	liczba_strzalow = 1000;
+	liczba_strzalow = 5;
 }
 void Przeciwnik::Akcja()
 {

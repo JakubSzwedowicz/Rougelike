@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+
 //#include "Gra.h"
 
 class Gra;
@@ -13,7 +15,7 @@ protected:
 	int numer;
 	Gra& gierka;
 public:
-	Jednostka(int _numer, int _x, int _y, int _kierunek, Gra& _gierka, float _hp, char _ikona);
+	Jednostka(float _hp, int _numer, int _x, int _y, Gra& _gierka, char _ikona, int _kierunek);
 	virtual ~Jednostka();
 	float DajHp();
 	char DajIkona();
