@@ -63,4 +63,4 @@ W trakcie tworzenia oprogramowania korzystano z Microsoft Visual Studio Communit
 
 ## Autor
 
-* **Jakub Szwedowicz** - *Solver* - [JakubSzwedowicz](https://github.com/JakubSzwedowicz)
+* **Jakub Szwedowicz** - *Rougelike* - [JakubSzwedowicz](https://github.com/JakubSzwedowicz)
