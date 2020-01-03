@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION "3.16.2")
+
+project("RougeLike")
+
+file(GLOB classes_cpp_h
+	"Sources/*.cpp"
+	"Headers/*.h"
+	)	
+set(all_files ${classes_cpp_h})
+
+add_executable("${PROJECT_NAME}" ${all_files})
+target_include_directories("${PROJECT_NAME}" PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Headers)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Maps
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
