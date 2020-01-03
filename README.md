@@ -61,6 +61,10 @@ zaś folder "przykładowe mapy" umieścić w folderze z plikami źródłowymi.
 Nie ma większych wymagań co do oprogramowania potrzebnego do uruchomienia programu. 
 W trakcie tworzenia oprogramowania korzystano z Microsoft Visual Studio Community 2019 16.1.0.
 
+### Uwagi
+
+Ze względu na korzystanie z biblioteki <windows.h> w nagłówku "dirent.h", program można uruchomić tylko na systemie Windows.
+
 ## Autor
 
 * **Jakub Szwedowicz** - *Rougelike* - [JakubSzwedowicz](https://github.com/JakubSzwedowicz)
