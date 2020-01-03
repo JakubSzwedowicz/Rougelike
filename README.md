@@ -53,8 +53,8 @@ O - obiekt,
 
 ## Przygotowania do włączenia programu
 
-Aby uruchomić poprawnie program należy załączyć wszystkie pliki w jednym projekcie, 
-zaś folder "przykładowe mapy" umieścić w folderze z plikami źródłowymi.
+W celu zbudowania projektu można posłużyć się plikiem CmakeLists.txt lub zrobić to ręcznie:  
+Należy załączyć wszystkie pliki w jednym projekcie, zaś folder "Maps" umieścić w folderze z plikami źródłowymi.
 
 ### Programy dodatkowe
 
@@ -63,7 +63,7 @@ W trakcie tworzenia oprogramowania korzystano z Microsoft Visual Studio Communit
 
 ### Uwagi
 
-Ze względu na korzystanie z biblioteki <windows.h> w nagłówku "dirent.h", program można uruchomić tylko na systemie Windows.
+Ze względu na korzystanie z biblioteki Windows.h w nagłówku "dirent.h", program można uruchomić tylko na systemie Windows
 
 ## Autor
 
